@@ -1,16 +1,11 @@
-from app.db.db import SessionLocal
-from app.db.crud import get_categories, get_books
+from fastapi import FastAPI
+from app.api import categories, books
 
-db = SessionLocal()
+app = FastAPI(title="Octagon API")
 
-categories = get_categories(db)
-print("Категории:")
-for cat in categories:
-    print(f"- {cat.title}")
+app.include_router(categories.router)
+app.include_router(books.router)
 
-books = get_books(db)
-print("\nКниги:")
-for book in books:
-    print(f"- {book.title} | {book.price} руб. | Категория ID: {book.category_id}")
-
-db.close()
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
